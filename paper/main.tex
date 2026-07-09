@@ -1,0 +1,130 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{natbib}
+
+\title{ShortcutLens: Detecting Spurious Correlation Reliance in Classical\\
+and Modern ML Classifiers Across Heterogeneous Tabular Datasets}
+
+\author{
+  Sunjoh Abdurazack \and Usman Jabir \and Gbanyawai Amadu \and Ebrima Demba\\
+  \small Systems and Software Lab, Islamic University of Technology, Gazipur, Bangladesh\\
+  \small Supervisor: Dr. Md. Kamrul Hasan
+}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Machine learning models deployed in real-world settings frequently encounter
+distribution shift, where statistical patterns present during training are
+absent at inference time. While shortcut learning has been extensively
+studied in deep learning, its prevalence and algorithmic variation in
+classical tabular ML classifiers remains poorly understood. We introduce
+ShortcutLens, a systematic benchmarking framework that injects five types of
+controlled spurious correlations into six real-world tabular datasets and
+evaluates nine classifiers under four experimental conditions. We propose the
+Causal Fidelity Score (CF), a pre-deployment metric quantifying each model's
+reliance on spurious features. \textit{[Fill in headline results after
+running \texttt{experiments/reproduce\_all.py}.]} These findings provide
+actionable guidelines for practitioners deploying tabular classifiers under
+distribution-shift risk. We release ShortcutLens as an open-source toolkit.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+\textit{[Problem statement, gap, contributions bullet list -- see
+README.md \S ``What this is'' for the framing and
+\texttt{PROJECT\_SUMMARY.md} for the full contributions list.]}
+
+\section{Related Work}
+\label{sec:related}
+\textit{[Three thematic groups: shortcut learning in deep learning,
+out-of-distribution generalization, robustness of classical ML classifiers.
+See \texttt{references.bib}.]}
+
+\section{Datasets}
+\label{sec:datasets}
+\textit{[Six datasets, sample/feature counts, class distributions,
+preprocessing, known limitations -- see README.md \S ``Datasets''.]}
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Problem Definition}
+\textit{[Formal notation for the classification task and shortcut
+injection.]}
+
+\subsection{Shortcut Injection Framework}
+Given feature matrix $X \in \mathbb{R}^{n \times d}$, label vector
+$y \in \{0,1\}^n$, and correlation strength $r \in [0,1]$, each injector
+appends one synthetic column $s \in \mathbb{R}^n$ to $X$. For the label-proxy
+mechanism used as the running example:
+\[
+  s_i = r \cdot (2y_i - 1) + (1-r) \cdot \epsilon_i, \qquad
+  \epsilon_i \sim \mathcal{N}(0, 1)
+\]
+so that $r=0$ yields pure noise and $r \to 1$ yields a near-perfect label
+proxy. See \texttt{shortcut\_lens/injectors.py} for all five mechanisms
+(label proxy, demographic proxy, temporal shortcut, selection bias,
+measurement artifact).
+
+\subsection{Experimental Conditions}
+For every (dataset, shortcut type, $r$, model) configuration we evaluate
+four conditions under stratified 5-fold cross-validation:
+\begin{itemize}
+  \item \textbf{A}: train clean $\rightarrow$ test clean
+  \item \textbf{B}: train shortcut $\rightarrow$ test shortcut
+  \item \textbf{C}: train shortcut $\rightarrow$ test out-of-distribution (key)
+  \item \textbf{D}: train shortcut $\rightarrow$ test shortcut-only
+\end{itemize}
+
+\subsection{Causal Fidelity Score}
+\[
+  \mathrm{CF} = 1 - \frac{\mathrm{SRS}}{\mathrm{Acc}(B)}, \qquad
+  \mathrm{SRS} = \mathrm{Acc}(B) - \mathrm{Acc}(C)
+\]
+with 95\% bootstrap confidence intervals computed over 1000 resamples of the
+per-fold condition-B and condition-C scores.
+
+\subsection{Statistical Testing}
+Pairwise Wilcoxon signed-rank tests (paired by fold) with
+Benjamini--Hochberg false-discovery-rate correction across all model pairs.
+
+\section{Results}
+\label{sec:results}
+\textit{[Table 1: main CF results. Table 2: significance. Figures 1--4: CF
+curves, phase-transition heatmap, importance audit, condition A/B/C/D bars.
+Table 3: ablation. Regenerate all figures via
+\texttt{experiments/generate\_figures.py}.]}
+
+\section{Discussion}
+\label{sec:discussion}
+\textit{[Mechanistic explanation, cross-shortcut-type consistency, phase
+transition shape, domain implications, practical guidelines.]}
+
+\section{Limitations and Future Work}
+\label{sec:limitations}
+\textit{[Synthetic shortcuts vs. naturally occurring ones; classical models
+only (no deep tabular models e.g. TabNet/FT-Transformer); single-shortcut
+injection per experiment rather than compositions.]}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\textit{[Summary of contributions and headline finding.]}
+
+\section*{AI Usage Statement}
+Large language model assistance (Anthropic Claude) was used for code
+scaffolding, documentation drafting, and editorial review. All experimental
+design, execution, and result interpretation were performed and verified by
+the authors.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
