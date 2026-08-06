@@ -1,0 +1,8 @@
+Model,Avg_CF_r_ge_0.5,Rank
+knn_5,0.8197,1
+svm_rbf,0.7425,2
+random_forest,0.7342,3
+logistic_regression,0.7276,4
+gradient_boosting,0.7196,5
+mlp,0.7167,6
+decision_tree,0.7005,7

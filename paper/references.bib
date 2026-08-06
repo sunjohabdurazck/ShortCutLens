@@ -1,22 +1,117 @@
+%--- Core ML Libraries / Tools ---
+
+@article{sklearn,
+  title   = {Scikit-learn: Machine Learning in {Python}},
+  author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre
+             and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier
+             and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron
+             and Dubourg, Vincent and Vanderplas, Jake and Passos, Alexandre
+             and Cournapeau, David and Brucher, Matthieu and Perrot, Matthieu
+             and Duchesnay, {\'E}douard},
+  journal = {Journal of Machine Learning Research},
+  volume  = {12},
+  pages   = {2825--2830},
+  year    = {2011},
+  url     = {https://jmlr.org/papers/v12/pedregosa11a.html}
+}
+
+@article{numpy,
+  title   = {{NumPy}: A fundamental package for scientific computing with {Python}},
+  author  = {Harris, Charles R. and Millman, K. Jarrod and van der Walt, St{\'e}fan J.
+             and others},
+  journal = {Nature},
+  volume  = {585},
+  pages   = {357--362},
+  year    = {2020},
+  doi     = {10.1038/s41586-020-2649-2}
+}
+
+@software{pandas,
+  title     = {pandas-dev/pandas: Pandas},
+  author    = {{The Pandas Development Team}},
+  year      = {2020},
+  publisher = {Zenodo},
+  url       = {https://doi.org/10.5281/zenodo.3509134}
+}
+
+%--- Classic Algorithm Papers ---
+
+@article{cortes1995svm,
+  title   = {Support-Vector Networks},
+  author  = {Cortes, Corinna and Vapnik, Vladimir},
+  journal = {Machine Learning},
+  volume  = {20},
+  number  = {3},
+  pages   = {273--297},
+  year    = {1995},
+  doi     = {10.1007/BF00994018}
+}
+
+@article{breiman2001rf,
+  title   = {Random Forests},
+  author  = {Breiman, Leo},
+  journal = {Machine Learning},
+  volume  = {45},
+  number  = {1},
+  pages   = {5--32},
+  year    = {2001},
+  doi     = {10.1023/A:1010933404324}
+}
+
+@article{freund1997adaboost,
+  title   = {A Decision-Theoretic Generalization of On-Line Learning and an
+             Application to Boosting},
+  author  = {Freund, Yoav and Schapire, Robert E.},
+  journal = {Journal of Computer and System Sciences},
+  volume  = {55},
+  number  = {1},
+  pages   = {119--139},
+  year    = {1997},
+  doi     = {10.1006/jcss.1997.1504}
+}
+
+@article{cover1967knn,
+  title   = {Nearest Neighbor Pattern Classification},
+  author  = {Cover, Thomas M. and Hart, Peter E.},
+  journal = {IEEE Transactions on Information Theory},
+  volume  = {13},
+  number  = {1},
+  pages   = {21--27},
+  year    = {1967},
+  doi     = {10.1109/TIT.1967.1053964}
+}
+
+%--- Evaluation Metrics ---
+
+@article{powers2011evaluation,
+  title   = {Evaluation: From Precision, Recall and {F}-Measure to {ROC},
+             Informedness, Markedness and Correlation},
+  author  = {Powers, David M. W.},
+  journal = {Journal of Machine Learning Technologies},
+  volume  = {2},
+  number  = {1},
+  pages   = {37--63},
+  year    = {2011}
+}
+
+%--- Shortcut Learning / Distribution Shift ---
+
 @article{geirhos2020shortcut,
-  title   = {Shortcut learning in deep neural networks},
-  author  = {Geirhos, Robert and Jacobsen, J{\"o}rn-Henrik and Michaelis, Claudio and Zemel, Richard and Brendel, Wieland and Bethge, Matthias and Wichmann, Felix A},
+  title   = {Shortcut Learning in Deep Neural Networks},
+  author  = {Geirhos, Robert and Jacobsen, J{\"o}rn-Henrik and Michaelis, Claudio
+             and Zemel, Richard and Brendel, Wieland and Bethge, Matthias
+             and Wichmann, Felix A.},
   journal = {Nature Machine Intelligence},
   volume  = {2},
   number  = {11},
   pages   = {665--673},
-  year    = {2020}
+  year    = {2020},
+  doi     = {10.1038/s42256-020-00257-z}
 }
 
-@article{arjovsky2019irm,
-  title   = {Invariant risk minimization},
-  author  = {Arjovsky, Martin and Bottou, L{\'e}on and Gulrajani, Ishaan and Lopez-Paz, David},
-  journal = {arXiv preprint arXiv:1907.02893},
-  year    = {2019}
-}
-
-@inproceedings{hermann2020shortcuts,
-  title     = {The origins and prevalence of texture bias in convolutional neural networks},
+@inproceedings{hermann2020origins,
+  title     = {The Origins and Prevalence of Texture Bias in Convolutional
+               Neural Networks},
   author    = {Hermann, Katherine and Chen, Ting and Kornblith, Simon},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   volume    = {33},
@@ -25,83 +120,101 @@
 }
 
 @article{damour2020underspecification,
-  title   = {Underspecification presents challenges for credibility in modern machine learning},
-  author  = {D'Amour, Alexander and Heller, Katherine and Moldovan, Dan and Adlam, Ben and Alipanahi, Babak and Beutel, Alex and Chen, Christina and Deaton, Jonathan and Eisenstein, Jacob and Hoffman, Matthew D and others},
-  journal = {arXiv preprint arXiv:2011.03395},
-  year    = {2020}
+  title   = {Underspecification Presents Challenges for Credibility in
+             Modern Machine Learning},
+  author  = {D'Amour, Alexander and Heller, Katherine and Moldovan, Dan
+             and others},
+  journal = {Journal of Machine Learning Research},
+  volume  = {23},
+  number  = {226},
+  pages   = {1--61},
+  year    = {2022}
 }
 
-@inproceedings{ribeiro2016lime,
-  title     = {"Why should I trust you?" Explaining the predictions of any classifier},
-  author    = {Ribeiro, Marco Tulio and Singh, Sameer and Guestrin, Carlos},
-  booktitle = {Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD)},
-  pages     = {1135--1144},
-  year      = {2016}
-}
-
-@inproceedings{koh2017influence,
-  title     = {Understanding black-box predictions via influence functions},
-  author    = {Koh, Pang Wei and Liang, Percy},
-  booktitle = {International Conference on Machine Learning (ICML)},
-  pages     = {1885--1894},
-  year      = {2017}
+@article{arjovsky2019irm,
+  title   = {Invariant Risk Minimization},
+  author  = {Arjovsky, Martin and Bottou, L{\'e}on and Gulrajani, Ishaan
+             and Lopez-Paz, David},
+  journal = {arXiv preprint arXiv:1907.02893},
+  year    = {2019}
 }
 
 @inproceedings{sagawa2020dro,
-  title     = {Distributionally robust neural networks for group shifts: On the importance of regularization for worst-case generalization},
-  author    = {Sagawa, Shiori and Koh, Pang Wei and Hashimoto, Tatsunori B and Liang, Percy},
+  title     = {Distributionally Robust Neural Networks for Group Shifts:
+               On the Importance of Regularization for Worst-Case
+               Generalization},
+  author    = {Sagawa, Shiori and Koh, Pang Wei and Hashimoto, Tatsunori B.
+               and Liang, Percy},
   booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2020}
 }
 
-@article{breiman2001randomforests,
-  title   = {Random forests},
-  author  = {Breiman, Leo},
-  journal = {Machine Learning},
-  volume  = {45},
-  number  = {1},
-  pages   = {5--32},
-  year    = {2001}
+%--- Post-hoc Explanation / Model Debugging ---
+
+@inproceedings{ribeiro2016lime,
+  title     = {"Why Should {I} Trust You?": Explaining the Predictions of
+               Any Classifier},
+  author    = {Ribeiro, Marco Tulio and Singh, Sameer and Guestrin, Carlos},
+  booktitle = {Proceedings of the 22nd ACM SIGKDD International Conference
+               on Knowledge Discovery and Data Mining},
+  pages     = {1135--1144},
+  year      = {2016},
+  doi       = {10.1145/2939672.2939778}
 }
 
-@book{vapnik1995nature,
-  title     = {The Nature of Statistical Learning Theory},
-  author    = {Vapnik, Vladimir N},
-  year      = {1995},
-  publisher = {Springer}
+@inproceedings{koh2017influence,
+  title     = {Understanding Black-box Predictions via Influence Functions},
+  author    = {Koh, Pang Wei and Liang, Percy},
+  booktitle = {Proceedings of the 34th International Conference on Machine
+               Learning (ICML)},
+  pages     = {1885--1894},
+  year      = {2017}
 }
 
-@misc{ucieadult,
-  title        = {Adult Income Dataset},
-  author       = {{UCI Machine Learning Repository}},
-  howpublished = {\url{https://archive.ics.uci.edu/dataset/2/adult}},
-  year         = {1996}
+%--- Datasets ---
+
+@misc{uci_heart,
+  title   = {Heart Disease Data Set},
+  author  = {{Janosi, Andras and Steinbrunn, William and Pfisterer, Matthias
+             and Detrano, Robert}},
+  year    = {1988},
+  howpublished = {UCI Machine Learning Repository},
+  url     = {https://archive.ics.uci.edu/dataset/45/heart+disease}
 }
 
-@misc{uciheart,
-  title        = {Heart Disease Dataset},
-  author       = {{UCI Machine Learning Repository}},
-  howpublished = {\url{https://archive.ics.uci.edu/dataset/45/heart+disease}},
-  year         = {1988}
+@misc{uci_mammography,
+  title   = {Mammographic Mass Data Set},
+  author  = {{Elter, Matthias}},
+  year    = {2007},
+  howpublished = {UCI Machine Learning Repository},
+  url     = {https://archive.ics.uci.edu/dataset/161/mammographic+mass}
 }
 
-@misc{ucicreditdefault,
-  title        = {Default of Credit Card Clients Dataset},
-  author       = {{UCI Machine Learning Repository}},
-  howpublished = {\url{https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients}},
-  year         = {2016}
+@misc{uci_adult,
+  title   = {Adult Data Set},
+  author  = {{Kohavi, Ronny and Becker, Barry}},
+  year    = {1996},
+  howpublished = {UCI Machine Learning Repository},
+  url     = {https://archive.ics.uci.edu/dataset/2/adult}
 }
 
-@misc{ucimammography,
-  title        = {Mammographic Mass Dataset},
-  author       = {{UCI Machine Learning Repository}},
-  howpublished = {\url{https://archive.ics.uci.edu/dataset/161/mammographic+mass}},
-  year         = {2007}
+@misc{uci_credit_default,
+  title   = {Default of Credit Card Clients Data Set},
+  author  = {{Yeh, I-Cheng}},
+  year    = {2007},
+  howpublished = {UCI Machine Learning Repository},
+  url     = {https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients}
 }
 
-@misc{ucimadelon,
-  title        = {MADELON Dataset},
-  author       = {{UCI Machine Learning Repository}},
-  howpublished = {\url{https://archive.ics.uci.edu/dataset/171/madelon}},
-  year         = {2004}
+%--- SPAS-Dataset-BD ---
+
+@article{spas_dataset,
+  title   = {SPAS-Dataset-BD: Dataset for smart precision agriculture system in Bangladesh},
+  author  = {Chowdhury, R. and Nur, F. N. and Islam, M. N. and Islam, M. N. and Das, P. and Afridi, A. S.},
+  journal = {Data in Brief},
+  volume  = {61},
+  pages   = {111727},
+  year    = {2025},
+  doi     = {10.17632/cphdw4z5kw.2},
+  url     = {https://data.mendeley.com/datasets/cphdw4z5kw/2}
 }
