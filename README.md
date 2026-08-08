@@ -498,7 +498,7 @@ cd paper && latexmk -pdf main.tex
   title        = {ShortcutLens: Detecting Spurious Correlation Reliance in Classical
                   and Modern ML Classifiers Across Heterogeneous Tabular Datasets},
   year         = {2026},
-  howpublished = {\url{https://github.com/InsightForge-ML/shortcut-lens}},
+  howpublished = {\url{https://github.com/sunjohabdurazck/shortcut-lens}},
   note         = {Islamic University of Technology, CSE 4622 Machine Learning Lab}
 }
 ```
