@@ -2,17 +2,17 @@
 
 # 🔬 ShortcutLens
 
-ShortcutLens is an open-source Python framework for measuring how much machine learning models rely on spurious correlations before deployment. By simulating distribution shift and controlled shortcut injection, it helps researchers and practitioners identify models that achieve high validation accuracy for the wrong reasons.
+**Measuring Spurious Correlation Reliance in Tabular Classifiers with the Causal Fidelity Score**
 
-[![tests](https://github.com/InsightForge-ML/shortcut-lens/actions/workflows/tests.yml/badge.svg)](https://github.com/InsightForge-ML/shortcut-lens/actions/workflows/tests.yml)
+ShortcutLens is a model-agnostic Python framework for measuring how much a tabular classifier's accuracy depends on spurious, non-causal shortcuts — before that dependence causes a silent failure in production.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Coverage](https://img.shields.io/badge/coverage-tracked-brightgreen.svg)](tests/)
 
 </div>
 
-> Your model hits 94% validation accuracy. In production it drops to 71%. Standard metrics never see it coming — because the model isn't learning your problem, it's learning a shortcut that happened to be lying around in the training distribution.
+> A model can post 94% validation accuracy and still fall apart in deployment — not because the task changed, but because the model was never learning the task. It was learning a shortcut that happened to be lying around in the training distribution.
 >
 > **ShortcutLens estimates that risk before you deploy.**
 
@@ -20,68 +20,67 @@ ShortcutLens is an open-source Python framework for measuring how much machine l
 
 ## 🤔 Why ShortcutLens?
 
-Traditional evaluation tells you **how accurate** a model is.
-ShortcutLens helps you understand **why** it's accurate.
+Standard validation tells you **how accurate** a model is. ShortcutLens tells you **how much of that accuracy you can trust**.
 
-A model that achieves 95% validation accuracy may still degrade sharply in production if it learned a spurious, non-causal shortcut rather than the underlying signal. ShortcutLens surfaces that hidden risk before deployment through controlled shortcut injection, out-of-distribution testing, and a single interpretable score — the **Causal Fidelity (CF) Score**.
+Shortcut learning — a model latching onto a spurious, non-causal correlation instead of the underlying signal — is well studied in deep vision models. It is comparatively unexamined in classical and ensemble classifiers on **tabular data**, despite tabular models being the dominant choice in healthcare, finance, and institutional decision-making.
+
+ShortcutLens closes that gap with a controlled, model-agnostic diagnostic: it injects a synthetic shortcut into a real dataset at a known strength, trains normally, and then measures how much of the model's performance survives once that shortcut disappears at test time — summarized in a single interpretable number, the **Causal Fidelity (CF) Score**.
 
 ---
 
 ## ✨ Features
 
-- 🔬 Estimates the risk of shortcut-dependent performance degradation under simulated distribution shift
-- 📊 Computes the novel **Causal Fidelity (CF) Score**, backed by bootstrap confidence intervals
-- ⚡ Supports **5 shortcut injection mechanisms** (label proxy, demographic proxy, temporal, selection bias, measurement artifact)
-- 🤖 Benchmarks **8+ classical and ensemble ML models** out of the box
-- 📈 Statistical significance testing (Wilcoxon signed-rank, Benjamini–Hochberg corrected)
-- 📉 Feature-importance auditing to identify *which* feature a model is relying on
-- 🐳 Docker & GitHub Actions CI support
-- 📦 Pip-installable Python package with a clean, documented API
+- 🔬 A four-condition evaluation protocol that isolates shortcut-supported accuracy from causally-grounded accuracy
+- 📊 The **Causal Fidelity (CF) Score**, backed by non-parametric bootstrap confidence intervals (1,000 replicates over 5-fold CV)
+- ⚡ **5 shortcut injection mechanisms** — label proxy, demographic proxy, temporal shortcut, selection bias, measurement artifact
+- 📐 A **12-point shortcut-strength grid** (`r ∈ {0.0, 0.1, …, 0.9, 0.95, 0.99}`) for locating each model's shortcut-tolerance transition
+- 🤖 A benchmark suite of **8 classifiers** spanning linear, kernel, instance-based, tree-based, boosting, and neural families
+- 📈 Statistical comparison via two-sided Wilcoxon signed-rank tests with Benjamini–Hochberg correction, plus permutation-importance auditing
+- 📦 Pip-installable package with a small, composable API (`injectors.py`, `pipeline.py`, `metrics.py`, `audit.py`, `visualizers.py`)
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [🤔 Why ShortcutLens?](#-why-shortcutlens)
-- [✨ Features](#-features)
-- [📖 Overview](#-overview)
-- [🧭 How It Works](#-how-it-works)
-- [🎯 Key Findings](#-key-findings)
-- [🧮 The Causal Fidelity Score](#-the-causal-fidelity-score)
-- [⚡ Quickstart](#-quickstart)
-- [📦 Installation](#-installation)
-- [💻 Usage](#-usage)
-- [🧪 The Experimental Protocol](#-the-experimental-protocol)
-- [🧬 Shortcut Types](#-shortcut-types)
-- [📊 Datasets](#-datasets)
-- [🤖 Benchmarked Models](#-benchmarked-models)
-- [🗂️ Repository Structure](#️-repository-structure)
-- [🔁 Reproducing All Results](#-reproducing-all-results)
-- [✅ Testing & CI](#-testing--ci)
-- [📈 Results Summary](#-results-summary)
-- [📄 Paper](#-paper)
-- [📝 Citing This Work](#-citing-this-work)
-- [🤝 Contributing](#-contributing)
-- [⚖️ License](#️-license)
-- [👥 Authors](#-authors)
+- [Why ShortcutLens?](#-why-shortcutlens)
+- [Features](#-features)
+- [Overview](#-overview)
+- [How It Works](#-how-it-works)
+- [Key Findings](#-key-findings)
+- [The Causal Fidelity Score](#-the-causal-fidelity-score)
+- [Quickstart](#-quickstart)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [The Experimental Protocol](#-the-experimental-protocol)
+- [Shortcut Types](#-shortcut-types)
+- [Datasets](#-datasets)
+- [Benchmarked Models](#-benchmarked-models)
+- [Repository Structure](#️-repository-structure)
+- [Reproducing All Results](#-reproducing-all-results)
+- [Testing & CI](#-testing--ci)
+- [Results Summary](#-results-summary)
+- [Paper](#-paper)
+- [Citing This Work](#-citing-this-work)
+- [Contributing](#-contributing)
+- [License](#️-license)
 
 ---
 
 ## 📖 Overview
 
-Machine learning models deployed in real-world settings frequently encounter **distribution shift**, where statistical patterns present at training time are absent or altered at inference time. Shortcut learning — a model's tendency to latch onto spurious, non-causal correlations rather than genuine signal — has been studied extensively in deep learning and computer vision, but its prevalence across **classical tabular ML classifiers** remains comparatively under-examined, despite tabular models being a common choice in medical, financial, and public-sector deployments.
+Machine learning models deployed in real-world settings frequently encounter **distribution shift**, where a statistical pattern present at training time weakens or disappears at inference time. Shortcut learning — a model's tendency to rely on such a pattern instead of genuine causal signal — has been studied extensively in deep learning and computer vision, but its prevalence in **classical and ensemble tabular classifiers** remains comparatively unexamined.
 
-**ShortcutLens** is a pip-installable Python toolkit built to help answer one question for any tabular classifier: *is it learning causally meaningful features, or has it latched onto a spurious correlation that may not hold up under distribution shift?*
+**ShortcutLens** answers one question for any tabular classifier: *is it relying on causally meaningful features, or has it latched onto a spurious correlation that may not survive deployment?*
 
 It does this by:
 
-1. **Injecting controlled synthetic shortcuts** into real tabular datasets, at 12 correlation strengths, across 5 distinct shortcut mechanisms (label proxies, demographic proxies, temporal drift, selection bias, measurement artifacts).
-2. **Evaluating every classifier under four experimental conditions** (clean training, shortcut training tested in-distribution, shortcut training tested out-of-distribution, and shortcut-only performance) to help isolate how much of a model's accuracy may be shortcut-dependent.
-3. **Scoring the result with the Causal Fidelity Score (CF)** — a single, interpretable, bootstrap-confidence-interval-backed number computable pre-deployment.
-4. **Auditing feature importances** to show *which* feature a model is actually relying on, not just *that* it degrades.
-5. **Backing every comparative claim statistically** — mean ± std across stratified 5-fold CV, with Wilcoxon signed-rank tests (Benjamini–Hochberg corrected).
+1. **Injecting a controlled synthetic shortcut** into a real tabular dataset, using one of 5 mechanisms at one of 12 strengths.
+2. **Evaluating the classifier under four experimental conditions** — clean baseline, shortcut-available, shortcut-removed, and shortcut-only — to isolate how much of its accuracy is shortcut-dependent.
+3. **Scoring the result with the Causal Fidelity (CF) Score** — a single bootstrap-backed number computable before deployment.
+4. **Auditing feature importances** via permutation importance to show *which* feature a model is actually relying on.
+5. **Backing every comparative claim statistically**, with two-sided Wilcoxon signed-rank tests (Benjamini–Hochberg corrected, α = 0.05) across stratified 5-fold CV.
 
-No synthetic toy datasets (MNIST, Iris, Titanic) are used anywhere in this project — every dataset is a real-world, clinically or financially consequential tabular problem.
+The benchmark evaluates 8 classifiers × 6 datasets × 5 mechanisms × 12 strengths × 4 conditions × 5 folds, with identical folds and preprocessing held fixed across conditions so that observed differences reflect the injected shortcut rather than experimental noise.
 
 ---
 
@@ -91,55 +90,57 @@ No synthetic toy datasets (MNIST, Iris, Titanic) are used anywhere in this proje
    Dataset
       │
       ▼
-Shortcut Injection   (5 mechanisms × 12 correlation strengths)
+Shortcut Injection    (5 mechanisms × 12 strengths)
       │
       ▼
-   Classifier          (8+ models: linear, tree-based, ensemble, neural)
+   Classifier          (8 models: linear, kernel, instance-based,
+      │                 tree-based, boosting, neural)
+      ▼
+4-Condition Evaluation  (A: clean · B: shortcut-available ·
+      │                  C: shortcut-removed · D: shortcut-only)
+      ▼
+  CF Score              (bootstrap CI + Wilcoxon significance testing)
       │
       ▼
-4-Condition Evaluation (A: clean · B: in-distribution · C: OOD · D: shortcut-only)
-      │
-      ▼
-  CF Score             (bootstrap CI + significance testing)
-      │
-      ▼
- Visualizations         (CF curves, phase-transition heatmaps, importance plots)
+ Visualizations         (CF-vs-strength curves, phase-transition
+                          heatmaps, importance plots)
 ```
 
-Each stage is a separate, composable module (`injectors.py`, `pipeline.py`, `metrics.py`, `audit.py`, `visualizers.py`), so any stage can be swapped, extended, or run independently — see [Usage](#-usage).
-
-> 📷 **Sample outputs:** rendered CF curves, phase-transition heatmaps, and feature-importance plots are generated under `paper/figures/` after running `experiments/generate_figures.py`, and can be embedded here once available.
+Each stage is a separate, composable module, so any stage can be swapped, extended, or run independently — see [Usage](#-usage).
 
 ---
 
 ## 🎯 Key Findings
 
-- 🎯 **Phase transitions** in shortcut reliance can occur at correlation strengths as low as r ≈ 0.3.
-- 🏆 **Linear models** (Logistic Regression, SVM-RBF) tend to be more robust to injected shortcuts than ensembles.
-- ⚠️ **Ensemble methods** (XGBoost, Random Forest, Gradient Boosting) show the highest susceptibility to shortcut adoption.
-- 📊 **Class-imbalanced datasets** amplify shortcut vulnerability.
-- 🔴 **Demographic-proxy shortcuts** tend to be more damaging than simple label-proxy shortcuts.
+These findings summarize the paper's benchmark across 6 datasets, 5 shortcut mechanisms, and shortcut strengths r ≥ 0.5 (210 CF observations per classifier).
 
-> Exact figures depend on your experimental run — see [Results Summary](#-results-summary) for the reporting format and [Reproducing All Results](#-reproducing-all-results) to generate your own numbers.
+- 🏆 **k-Nearest Neighbors is the most robust classifier tested**, with the highest mean CF Score (**0.8197**) and the highest CF on several individually difficult conditions (e.g. CF = 0.81 on the SPAS dataset under demographic-proxy injection).
+- ⚠️ **XGBoost is the least robust**, with the lowest mean CF Score (**0.6982**); tree-based and boosting models generally fall below the 0.7 operational threshold under demographic- and label-proxy injection.
+- 🔴 **Demographic-proxy shortcuts cause the most severe degradation**, crossing the CF = 0.7 risk threshold at markedly lower correlation strengths than label-proxy shortcuts — because a demographic feature correlates with both the label *and* an existing real feature, creating a redundant predictive path that greedy learners exploit even at moderate strength.
+- 🟢 **Measurement-artifact and temporal shortcuts leave CF comparatively stable** (often > 0.95), even as their generation strength approaches 1.0, since as constructed they lack that redundant path to the label.
+- 📊 On the Heart Disease dataset under demographic-proxy injection at r = 0.5, kNN achieves significantly higher CF than Gradient Boosting, Decision Tree, Random Forest, XGBoost, and the MLP (Wilcoxon signed-rank, p < 0.05 after Benjamini–Hochberg correction); differences against Logistic Regression and SVM (RBF) were not statistically significant.
+
+> Full per-dataset, per-mechanism numbers are in the paper's Table II (CF at r = 0.5) and Table IV (overall ranking) — see [Results Summary](#-results-summary).
 
 ---
 
 ## 🧮 The Causal Fidelity Score
 
 ```
-CF = 1 - SRS / Acc(B)          where SRS = Acc(B) - Acc(C)
+SRS = B - C                    (Shortcut Reliance Score: absolute performance loss)
+CF  = 1 - SRS / B  =  C / B    (Causal Fidelity Score: normalized performance retention)
 ```
 
-| Condition | Meaning |
-|---|---|
-| **A** | Train clean → test clean (true baseline capability) |
-| **B** | Train with shortcut → test with shortcut (in-distribution, possibly inflated) |
-| **C** | Train with shortcut → test **out-of-distribution** (shortcut column replaced with noise) — **the simulated deployment-shift condition** |
-| **D** | Train with shortcut → test with real features zeroed out (pure shortcut reliance) |
+| Condition | Train | Test | Purpose |
+|---|---|---|---|
+| **A** | Clean | Clean | Clean baseline |
+| **B** | Augmented (shortcut present) | Augmented (shortcut present) | Shortcut-available accuracy |
+| **C** | Augmented (shortcut present) | Shortcut replaced with Gaussian noise | Shortcut-removal accuracy — the simulated deployment-shift condition |
+| **D** | Augmented (shortcut present) | Shortcut feature only | Shortcut-only diagnostic |
 
-**CF = 1.0** → the model appears to ignore the shortcut; performance looks fully causal.
-**CF = 0.0** → the model's performance appears entirely shortcut-dependent; a sharp production drop would be expected under similar shift.
-**CF < 0.0** → the shortcut appears to have actively hurt generalization (rare, but diagnostically interesting).
+A CF value close to **1.0** means most shortcut-available performance is retained once the shortcut disappears — the model's accuracy looks causally grounded. A lower CF means the model's performance is sensitive to the shortcut going away. The paper uses **CF = 0.7** as a study-specific threshold for flagging a model for further investigation, and treats CF as a *performance-retention diagnostic*, not a literal proportion of causally-grounded predictions. When B < 0.01, CF-based ranking is excluded because the ratio becomes unstable.
+
+Uncertainty in CF is quantified with a non-parametric bootstrap over the 5 cross-validation folds (1,000 replicates), reporting the 2.5th–97.5th percentile as a 95% confidence interval.
 
 ```python
 from shortcut_lens import causal_fidelity_score
@@ -151,16 +152,16 @@ result = causal_fidelity_score(
     fold_results_B=[0.93, 0.95, 0.94, 0.94, 0.95],
     fold_results_C=[0.70, 0.72, 0.71, 0.70, 0.72],
 )
-# {'cf_score': 0.245, 'srs': 0.23, 'ci_lower': 0.19, 'ci_upper': 0.31, ...}
+# {'cf_score': 0.755, 'srs': 0.23, 'ci_lower': 0.71, 'ci_upper': 0.79, ...}
 ```
 
 ---
 
-## Quickstart
+## ⚡ Quickstart
 
 ```bash
-git clone https://github.com/InsightForge-ML/shortcut-lens.git
-cd shortcut-lens
+git clone https://anonymous.4open.science/r/ShortCutLens-153A/
+cd ShortCutLens-153A
 pip install -e .
 
 python - <<'PY'
@@ -169,10 +170,10 @@ from sklearn.ensemble import RandomForestClassifier
 from shortcut_lens.utils import load_dataset
 
 X, y = load_dataset("heart_disease")
-injector = ShortcutInjector(correlation_strength=0.9)
+injector = ShortcutInjector(correlation_strength=0.5)
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 
-result = run_full_experiment(X, y, model, injector, shortcut_type="label_proxy")
+result = run_full_experiment(X, y, model, injector, shortcut_type="demographic_proxy")
 cf = causal_fidelity_score(
     result["condition_A"]["accuracy"]["mean"],
     result["condition_B"]["accuracy"]["mean"],
@@ -182,19 +183,19 @@ print(f"Causal Fidelity Score: {cf['cf_score']:.3f}")
 PY
 ```
 
+> For a longer, hand-held walkthrough (including troubleshooting), see [SETUP.md](SETUP.md).
+
 ---
 
-## Installation
-
-> For a longer, hand-held walkthrough (including troubleshooting), see [SETUP.md](SETUP.md).
+## 📦 Installation
 
 **Requirements:** Python 3.9+, Git, and (optionally) LaTeX for compiling the paper.
 
 ### Editable install (recommended for development)
 
 ```bash
-git clone https://github.com/InsightForge-ML/shortcut-lens.git
-cd shortcut-lens
+git clone https://anonymous.4open.science/r/ShortCutLens-153A/
+cd ShortCutLens-153A
 
 python -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\activate
@@ -246,14 +247,14 @@ mypy>=0.990
 
 ---
 
-## Usage
+## 💻 Usage
 
 ### 1. Inject a shortcut
 
 ```python
 from shortcut_lens import ShortcutInjector
 
-injector = ShortcutInjector(correlation_strength=0.7, random_state=42)
+injector = ShortcutInjector(correlation_strength=0.5, random_state=42)
 X_shortcut = injector.inject("demographic_proxy", X_train, y_train)   # adds 1 column
 X_ood = injector.remove_shortcut(X_shortcut)                          # simulate deployment
 ```
@@ -294,7 +295,7 @@ print(audit["dominance_ratio"])  # > 1.0 means the shortcut outweighs real featu
 from shortcut_lens import compare_models_statistically
 
 df = compare_models_statistically(
-    {"svm_rbf": {"cf_score": [...]}, "random_forest": {"cf_score": [...]}},
+    {"knn_5": {"cf_score": [...]}, "xgboost": {"cf_score": [...]}},
     metric="cf_score",
 )
 ```
@@ -302,7 +303,7 @@ df = compare_models_statistically(
 ### Command-line interface
 
 ```bash
-# Full grid: 6 datasets × 5 shortcuts × 12 strengths × 9 classifiers × 5-fold CV
+# Full grid: 6 datasets × 5 shortcuts × 12 strengths × 8 classifiers × 5-fold CV
 python experiments/reproduce_all.py
 
 # Fast smoke-test grid (what CI runs)
@@ -317,58 +318,59 @@ python experiments/generate_figures.py --results experiments/results/all_results
 
 ---
 
-## The Experimental Protocol
+## 🧪 The Experimental Protocol
 
-Every `(dataset, shortcut_type, correlation_strength, model)` combination is evaluated with stratified 5-fold cross-validation across all four conditions above. The gap between **Condition B** and **Condition C** is the deployment disaster the CF Score is designed to catch *before* it happens in production.
+Every (dataset, shortcut mechanism, strength, classifier) combination is evaluated with stratified 5-fold cross-validation across all four conditions above, with preprocessing (standardization, imputation) fit on the training fold only to avoid leakage. The gap between **Condition B** and **Condition C** is the deployment-time performance loss the CF Score is designed to catch before it happens in production.
 
 ---
 
-## Shortcut Types
+## 🧬 Shortcut Types
 
-| # | Type | Simulates |
+| # | Mechanism | Construction |
 |---|---|---|
-| 1 | `label_proxy` | A data-collection artifact that leaks the outcome (e.g. patient-ID ranges correlated with diagnosis at one hospital) |
-| 2 | `demographic_proxy` | An existing feature (zip code, occupation) repurposed as a protected-attribute proxy |
-| 3 | `temporal_shortcut` | A pattern valid early in the data stream that decays over time (seasonality, policy change, sensor drift) |
-| 4 | `selection_bias` | Non-random sampling in training data (e.g. pooled from specific hospitals/regions) |
-| 5 | `measurement_artifact` | Systematic bias from the collection instrument, correlated with the label only within certain batches |
+| 1 | `label_proxy` | Mixes a sign-encoded class label with Gaussian noise |
+| 2 | `demographic_proxy` | Combines label information with a normalized existing feature |
+| 3 | `temporal_shortcut` | A label-related signal that decays with sample order |
+| 4 | `selection_bias` | A noisy feature with class-conditional mean shifts controlled by strength |
+| 5 | `measurement_artifact` | A signal generated across three collection batches with batch-dependent strength |
 
-Every experiment is run across **12 correlation strengths** (`0.0 → 0.99`) to precisely locate each model's *phase transition* — the point at which it starts trading real signal for the shortcut.
+Because the five mechanisms differ in construction, the strength parameter `r` is interpreted independently per mechanism rather than as a shared Pearson correlation. Every experiment sweeps **12 strengths**: `r ∈ {0.0, 0.1, 0.2, …, 0.9, 0.95, 0.99}`.
 
 ---
 
-## Datasets
+## 📊 Datasets
 
-Six real-world tabular datasets, each chosen to stress a different robustness dimension.
+Six real-world datasets spanning healthcare, finance, and agriculture, chosen to vary sample size, dimensionality, class balance, and domain.
 
-| Dataset | Samples | Features | Domain | Robustness Dimension |
-|---|---|---|---|---|
-| [Heart Disease (UCI)](https://archive.ics.uci.edu/dataset/45/heart+disease) | 303 | 13 | Medical | Clinically meaningful features, dangerous shortcuts |
-| [Adult Income (UCI/OpenML)](https://archive.ics.uci.edu/dataset/2/adult) | 48,842 | 14 | Fairness | Demographic proxy variables |
-| [Credit Default (UCI)](https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients) | 30,000 | 23 | Finance | Real deployment stakes, temporal shortcuts |
-| [Mammographic Mass (UCI)](https://archive.ics.uci.edu/dataset/161/mammographic+mass) | 961 | 5 | Medical (imbalanced) | 97% negative class — shortcut amplification under imbalance |
-| [MADELON (UCI)](https://archive.ics.uci.edu/dataset/171/madelon) | 2,600 | 500 (420 pure noise) | Synthetic/high-dim | Ground-truth irrelevant features |
-| Local/regional dataset | — | — | Bangladesh context | Regional relevance; falls back to UCI Statlog German Credit if unconfigured |
+| Dataset | Samples | Features | Domain |
+|---|---|---|---|
+| [Heart Disease (UCI)](https://archive.ics.uci.edu/dataset/45/heart+disease) | 303 | 13 | Healthcare |
+| [Mammographic Mass (UCI)](https://archive.ics.uci.edu/dataset/161/mammographic+mass) | 961 | 5 | Healthcare |
+| [Adult Income (UCI)](https://archive.ics.uci.edu/dataset/2/adult) | 48,842 | 14 | Finance / fairness |
+| [Credit Card Default (UCI)](https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients) | 30,000 | 23 | Finance |
+| SPAS-Dataset-BD | ~13,000 | 9 (selected) | Smart precision agriculture, Bangladesh |
+| MADELON (UCI) | 2,600 | 500 | Synthetic / high-dimensional feature selection |
 
 `shortcut_lens/utils.py::load_dataset(name)` handles fetching and caching for all six.
 
 ---
 
-## Models Evaluated
+## 🤖 Benchmarked Models
 
-| Family | Models |
+| Family | Model(s) |
 |---|---|
-| Linear | Logistic Regression, SVM (RBF kernel) |
-| Instance-based | k-Nearest Neighbors |
-| Tree-based | Decision Tree, Random Forest, Gradient Boosting |
-| Neural | Multi-Layer Perceptron |
-| Ensemble | XGBoost |
+| Linear | Logistic Regression |
+| Kernel | SVM (RBF kernel) |
+| Instance-based | k-Nearest Neighbors (k = 5) |
+| Tree-based | Decision Tree (max depth 10), Random Forest (100 estimators) |
+| Boosting | Gradient Boosting (100 estimators), XGBoost |
+| Neural | Multi-Layer Perceptron (hidden layers 128, 64; ReLU) |
 
-`shortcut_lens/utils.py` exposes a model-suite registry, so the classifier set is easily extensible.
+Hyperparameters are held fixed across all conditions so observed differences reflect the injected shortcut rather than tuning variation. `shortcut_lens/utils.py` exposes a model-suite registry, so the classifier set is easily extensible.
 
 ---
 
-## Repository Structure
+## 🗂️ Repository Structure
 
 ```
 shortcut-lens/
@@ -393,7 +395,7 @@ shortcut-lens/
 │   └── utils.py                  # Dataset loaders + model-suite registry
 │
 ├── experiments/
-│   ├── reproduce_all.py          # ONE COMMAND: runs the full experimental grid
+│   ├── reproduce_all.py          # Runs the full experimental grid
 │   ├── generate_figures.py       # Regenerates every paper figure from results JSON
 │   ├── configs/                  # One YAML per dataset (shortcut types, r-grid, folds)
 │   └── results/                  # Auto-generated, gitignored raw results
@@ -409,14 +411,13 @@ shortcut-lens/
 
 ---
 
-## Reproducing All Results
+## 🔁 Reproducing All Results
 
 ```bash
-# Full grid: 6 datasets × 5 shortcut types × 12 correlation strengths × 9 classifiers × 5-fold CV
-# (thousands of model fits — several hours on a laptop CPU, faster with parallelism)
+# Full grid: 6 datasets × 5 shortcut types × 12 strengths × 8 classifiers × 4 conditions × 5-fold CV
 python experiments/reproduce_all.py
 
-# Fast smoke-test grid (what CI runs) — a couple of minutes
+# Fast smoke-test grid (what CI runs)
 python experiments/reproduce_all.py --quick
 
 # Subset of datasets
@@ -428,16 +429,14 @@ python experiments/generate_figures.py --results experiments/results/all_results
 
 All results are written to `experiments/results/all_results.json`; all figures to `paper/figures/*.pdf` (vector graphics, ready for direct LaTeX inclusion).
 
-**Grid sizes:**
-
-| Mode | Coverage | Approx. Runtime |
-|---|---|---|
-| `--quick` | 2 datasets × 2 shortcuts × 3 strengths × 8 models (~96 configs) | ~5 minutes |
-| Full | 6 datasets × 5 shortcuts × 12 strengths × 9 models (~3,240 configs) | Several hours (parallelizable) |
+| Mode | Coverage |
+|---|---|
+| `--quick` | A reduced subset of datasets, mechanisms, strengths, and models for a fast end-to-end smoke test |
+| Full | 8 classifiers × 6 datasets × 5 mechanisms × 12 strengths × 4 conditions × 5 folds (the full paper grid) |
 
 ---
 
-## Testing & CI
+## ✅ Testing & CI
 
 ```bash
 pip install -e ".[dev]"
@@ -450,8 +449,6 @@ Every push and pull request runs, via GitHub Actions (`.github/workflows/tests.y
 2. The full unit + integration test suite with coverage reporting
 3. A `--quick` end-to-end smoke test of the entire experimental pipeline
 
-on Python 3.10 and 3.11.
-
 ```bash
 # Format code
 black shortcut_lens/ experiments/ tests/
@@ -462,27 +459,28 @@ mypy shortcut_lens/
 
 ---
 
-## Results Summary
+## 📈 Results Summary
 
-> Populate with your actual numbers after `experiments/reproduce_all.py` completes a full run. Example table shape below.
+Overall classifier ranking by mean CF Score across all 6 datasets, 5 shortcut mechanisms, and shortcut strengths r ≥ 0.5 (210 CF observations per classifier):
 
-| Model | Acc(A) | Acc(B) | Acc(C) | CF Score | SRS |
-|---|---|---|---|---|---|
-| Logistic Regression | 0.81 ± 0.03 | 0.88 ± 0.02 | 0.85 ± 0.03 | 0.85 ± 0.04 | 0.03 |
-| SVM (RBF) | 0.84 ± 0.03 | 0.91 ± 0.02 | 0.88 ± 0.03 | 0.89 ± 0.04 | 0.03 |
-| Decision Tree | 0.79 ± 0.04 | 0.90 ± 0.03 | 0.78 ± 0.04 | 0.72 ± 0.05 | 0.12* |
-| Random Forest | 0.83 ± 0.04 | 0.94 ± 0.02 | 0.71 ± 0.05 | 0.24 ± 0.06 | 0.23* |
-| XGBoost | 0.85 ± 0.03 | 0.95 ± 0.02 | 0.74 ± 0.04 | 0.29 ± 0.05 | 0.21* |
+| Rank | Model | Mean CF | Std. Dev. |
+|---|---|---|---|
+| 1 | k-NN (k = 5) | 0.8197 | 0.089 |
+| 2 | SVM (RBF) | 0.7425 | 0.112 |
+| 3 | Random Forest | 0.7342 | 0.124 |
+| 4 | Logistic Regression | 0.7276 | 0.118 |
+| 5 | Gradient Boosting | 0.7196 | 0.134 |
+| 6 | MLP | 0.7167 | 0.128 |
+| 7 | Decision Tree | 0.7005 | 0.146 |
+| 8 | XGBoost | 0.6982 | 0.152 |
 
-*\*p < 0.01 after Benjamini–Hochberg correction (Wilcoxon signed-rank, paired by fold).*
-
-Reported significance thresholds used throughout the paper: `p < 0.001` for family-level comparisons (e.g. ensemble vs. linear), `p < 0.01` and `p < 0.05` for pairwise model comparisons.
+At r = 0.5, demographic-proxy injection produces the largest CF degradation across most datasets (CF falling below 0.60 for most classifiers on Adult, Credit Default, Heart Disease, MADELON, and Mammographic Mass), while measurement-artifact and temporal shortcuts leave CF comparatively stable across the board. Full per-dataset, per-mechanism CF values at r = 0.5 are reported in the paper's Table II; pairwise significance tests for the Heart Disease demographic-proxy condition are in Table III.
 
 ---
 
-## Paper
+## 📄 Paper
 
-The full write-up (`paper/main.tex`) follows the standard ML-conference structure: Abstract, Introduction, Related Work, Datasets, Methodology, Results, Discussion, Practical Guidelines, Limitations, Conclusion. See `paper/references.bib` for the bibliography (Geirhos et al. 2020, Arjovsky et al. 2019 / IRM, D'Amour et al. 2020, Breiman 2001, Vapnik 1995, and others).
+The full write-up follows a standard conference structure: Abstract, Introduction, Related Work, Datasets, Methodology, Results, Discussion, Practical Guidance, Threats to Validity, Conclusion.
 
 ```bash
 cd paper && latexmk -pdf main.tex
@@ -490,22 +488,23 @@ cd paper && latexmk -pdf main.tex
 
 ---
 
-## Citing This Work
+## 📝 Citing This Work
+
+This repository accompanies a paper currently under anonymous review. A full citation will be added upon publication.
 
 ```bibtex
 @misc{shortcutlens2026,
-  author       = {Sunjoh Abdurazack and Usman Jabir and Gbanyawai Amadu and Ebrima Demba},
-  title        = {ShortcutLens: Detecting Spurious Correlation Reliance in Classical
-                  and Modern ML Classifiers Across Heterogeneous Tabular Datasets},
+  title        = {ShortcutLens: Measuring Spurious Correlation Reliance in Tabular
+                  Classifiers with the Causal Fidelity Score},
   year         = {2026},
-  howpublished = {\url{https://github.com/sunjohabdurazck/shortcut-lens}},
-  note         = {Islamic University of Technology, CSE 4622 Machine Learning Lab}
+  howpublished = {\url{https://anonymous.4open.science/r/ShortCutLens-153A/}},
+  note         = {Anonymous submission}
 }
 ```
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Issues and pull requests are welcome.
 
@@ -520,20 +519,9 @@ See `.github/workflows/tests.yml` for the exact commands CI runs.
 
 ---
 
-## License
+## ⚖️ License
 
-[MIT](LICENSE) © 2026 Sunjoh Abdurazack and contributors.
-
----
-
-## Authors
-
-| Name | Student ID |
-|---|---|
-| Sunjoh Abdurazack | 220041258 |
-| Usman Jabir | 220041262 |
-| Gbanyawai Amadu | 220041266 |
-| Ebrima Demba | 220041264 |
+Released under the [MIT License](LICENSE).
 
 <div align="center">
 
